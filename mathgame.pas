@@ -14,25 +14,19 @@ end;
 procedure BeginOfGame; {Text in the beginning of program}
 begin
 	writeln('Hi! This game can help you tune your abilities in math.');
-	writeln('First version of this game include only 1 math opetation - sum');
+	writeln('2.0 version of this game include 2 math opetation that can be randomize');
 end;
-procedure RandNumb(var x, y, rightans: integer);
+procedure RandNumbPlus(var x, y, rightans: integer);
 begin
-	x := diffrand * random(100);
-	y := diffrand * random(100);
+	x := diffrand * random(100) + 53;
+	y := diffrand * random(100) + 23;
 	rightans := x + y;
 end;
-procedure MathRandomize(var mathoper);
-var
-	mathoper_choise: integer;
+procedure RandNumbMinus(var x, y, rightans: integer);
 begin
-	mathoper_choise := random (2);
-	case mathoper_choise of
-		mathoper_choise = 0:
-			mathoper := -;
-		mathoper_choise = 1:
-			mathoper := +;
-	end;
+	x := diffrand * random(100) + 53;
+	y := diffrand * random(100) + 23;
+	rightans := x - y;
 end;
 function isright(ans, rightans: integer): boolean;
 begin
@@ -44,9 +38,9 @@ end;
 procedure diffcheck(difficult: boolean);
 begin
 	if difficult then
-		diffrand := diffrand * 10
+		diffrand := diffrand * 10 
 	else
-		diffrand := diffrand - 10;
+		diffrand := diffrand - 100;
 end;
 {Variables}
 var
@@ -55,16 +49,25 @@ var
 	rightans: integer;
 	isrightres: boolean;
 
-procedure maingame(mathoper: char);
+procedure maingame(mathoper: integer);
 begin
 	x := 0;
 	y := 0;
 	ans := 0;
 	rightans := 0;
 	isrightres := false;
-
-	RandNumb(x, y, rightans);
-	write('Solve ', x, ' + ', y, ': ');
+	case mathoper of
+		0:
+			begin
+				RandNumbPlus(x, y, rightans);
+				write('Solve ', x, ' + ', y, ': ');
+			end;
+		1:
+			begin
+				RandNumbMinus(x, y, rightans);
+				write('Solve ', x, ' - ', y, ': ');
+			end;
+	end;
 	{$I-}
 	read(ans);
 	IOcheck;
@@ -82,11 +85,14 @@ begin
 	diffcheck(difficult);
 end;
 var
+	i: integer;
 	endchoise: char;
-	mathoper: char;
+	mathoper: integer;
 begin
 	randomize;
 	BeginOfGame;
+	writeln('Enter to continue');
+	readln;
 	while 0=0 do
 	begin
 		repeat
@@ -94,15 +100,14 @@ begin
 			readln(endchoise);
 		until endchoise in ['Y','y','n','N'];
 		if (endchoise = 'N') or (endchoise = 'n') then
+		begin
+			writeln('See you later...');
 			halt(0);
-		mathrandomize(mathoper);
-		mathoper_choise := random (2);
-		case mathoper_choise of
-			mathoper_choise = 0:
-				mathoper := -;
-			mathoper_choise = 1:
-				mathoper := +;
 		end;
+		for i := 1 to 35 do
+		       writeln;
+		mathoper := random(2); { Randomize Mathematic Operation }
 		maingame(mathoper);
+		readln;
 	end;
 end.
