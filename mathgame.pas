@@ -1,5 +1,8 @@
 program mathgame;
 {$mode Delphi}
+var
+	difficult: boolean;
+	diffrand: integer = 10;
 procedure IOcheck;
 begin
 	if IOresult <> 0 then
@@ -15,16 +18,35 @@ begin
 end;
 procedure RandNumb(var x, y, rightans: integer);
 begin
-	x := random(100);
-	y := random(100);
+	x := diffrand * random(100);
+	y := diffrand * random(100);
 	rightans := x + y;
+end;
+procedure MathRandomize(var mathoper);
+var
+	mathoper_choise: integer;
+begin
+	mathoper_choise := random (2);
+	case mathoper_choise of
+		mathoper_choise = 0:
+			mathoper := -;
+		mathoper_choise = 1:
+			mathoper := +;
+	end;
 end;
 function isright(ans, rightans: integer): boolean;
 begin
 	if ans = rightans then
-		result := true
+		result := TRUE
 	else
-		result := false;
+		result := FALSE;
+end;
+procedure diffcheck(difficult: boolean);
+begin
+	if difficult then
+		diffrand := diffrand * 10
+	else
+		diffrand := diffrand - 10;
 end;
 {Variables}
 var
@@ -33,7 +55,7 @@ var
 	rightans: integer;
 	isrightres: boolean;
 
-procedure maingame;
+procedure maingame(mathoper: char);
 begin
 	x := 0;
 	y := 0;
@@ -48,12 +70,20 @@ begin
 	IOcheck;
 	isrightres := isright(ans, rightans);
 	if isrightres then
-		writeln('Nice work!')
+	begin
+		writeln('Nice work!');
+		difficult := TRUE;
+	end
 	else
+	begin
 		writeln('No, right answer is ', rightans);
+		difficult := FALSE;
+	end;
+	diffcheck(difficult);
 end;
 var
 	endchoise: char;
+	mathoper: char;
 begin
 	randomize;
 	BeginOfGame;
@@ -65,6 +95,14 @@ begin
 		until endchoise in ['Y','y','n','N'];
 		if (endchoise = 'N') or (endchoise = 'n') then
 			halt(0);
-		maingame;
+		mathrandomize(mathoper);
+		mathoper_choise := random (2);
+		case mathoper_choise of
+			mathoper_choise = 0:
+				mathoper := -;
+			mathoper_choise = 1:
+				mathoper := +;
+		end;
+		maingame(mathoper);
 	end;
 end.
