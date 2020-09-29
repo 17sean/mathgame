@@ -1,9 +1,9 @@
-program mathgame;
+program mathgame; { TODO make gui }
 {$mode Delphi}
-var
+var { Global Variables }
 	difficult: boolean;
 	diffrand: integer = 10;
-procedure IOcheck;
+procedure IOcheck; { Input output result check }
 begin
 	if IOresult <> 0 then
 	begin
@@ -11,39 +11,46 @@ begin
 		halt(1);
 	end;
 end;
-procedure BeginOfGame; {Text in the beginning of program}
+procedure BeginOfGame; { Text in the beginning of program }
 begin
 	writeln('Hi! This game can help you tune your abilities in math.');
-	writeln('2.0 version of this game include 2 math opetation that can be randomize');
+	writeln('3.0 version of this game include choise for math operations');
 end;
-procedure RandNumbPlus(var x, y, rightans: integer);
+procedure maingame_zeroing(var x, y, ans, rightans: integer; var isrightres: boolean);
 begin
-	x := diffrand * random(100) + 53;
-	y := diffrand * random(100) + 23;
+	x := 0;
+	y := 0;
+	ans := 0;
+	rightans := 0;
+	isrightres := false;
+end;
+procedure RandNumbPlus(var x, y, rightans: integer); { Randomize numbers math oper: + }
+begin
+	x := diffrand + random(100) + 51;
+	y := diffrand + random(100) - 23;
 	rightans := x + y;
 end;
-procedure RandNumbMinus(var x, y, rightans: integer);
+procedure RandNumbMinus(var x, y, rightans: integer); { Randomize numbers math oper: - }
 begin
-	x := diffrand * random(100) + 53;
-	y := diffrand * random(100) + 23;
+	x := diffrand + random(100) + 51;
+	y := diffrand + random(100) - 23;
 	rightans := x - y;
 end;
-function isright(ans, rightans: integer): boolean;
+function isright(ans, rightans: integer): boolean; { Check if answer equal right answer }
 begin
 	if ans = rightans then
 		result := TRUE
 	else
 		result := FALSE;
 end;
-procedure diffcheck(difficult: boolean);
+procedure diffcheck(difficult: boolean); { Difficult changer }
 begin
-	if difficult then
-		diffrand := diffrand * 10 
+	if difficult = true then
+		diffrand := diffrand + 50  
 	else
-		diffrand := diffrand - 100;
+		diffrand := diffrand - 50;
 end;
-{Variables}
-var
+var { Variables for main game }
 	x, y: integer;
 	ans: integer;
 	rightans: integer;
@@ -51,11 +58,7 @@ var
 
 procedure maingame(mathoper: integer);
 begin
-	x := 0;
-	y := 0;
-	ans := 0;
-	rightans := 0;
-	isrightres := false;
+	maingame_zeroing(x, y, ans, rightans, isrightres);
 	case mathoper of
 		0:
 			begin
@@ -88,6 +91,7 @@ var
 	i: integer;
 	endchoise: char;
 	mathoper: integer;
+	gamemode: integer;
 begin
 	randomize;
 	BeginOfGame;
@@ -106,7 +110,29 @@ begin
 		end;
 		for i := 1 to 35 do
 		       writeln;
-		mathoper := random(2); { Randomize Mathematic Operation }
+       		writeln('Choose game mode:');
+		writeln('2 - random');
+		writeln('1 - minus');
+		writeln('0 - plus');
+		read(gamemode);
+		IOcheck;
+		case gamemode of
+			2:
+			begin
+				writeln('You choosed random mode');
+				mathoper := random(2); { Randomize Mathematic Operation }
+			end;
+			1:
+			begin
+				writeln('You choosed minus mode');
+				mathoper := 1;
+			end;
+			0:
+			begin
+				writeln('You choosed plus mode');
+				mathoper := 0;
+			end;
+		end;
 		maingame(mathoper);
 		readln;
 	end;
