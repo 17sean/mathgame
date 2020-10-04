@@ -1,73 +1,44 @@
-program mathgame; { TODO make gui }
+program mathgame;
 {$mode Delphi}
+uses crt, engineapi;
+type
+	msgarr = array [1..5] of string;
+label
+	point_chgm;
 var { Global Variables }
+	CurX, CurY: integer;
 	difficult: boolean;
 	diffrand: integer = 10;
-procedure IOcheck; { Input output result check }
+	wins: integer;
+procedure halfscrXY(msg: string);
 begin
-	if IOresult <> 0 then
-	begin
-		writeln('Error, i can`t parse your input');
-		halt(1);
-	end;
+	CurX := (ScreenWidth - length(msg)) div 2;
+	CurY := ScreenHeight div 2;
 end;
-procedure BeginOfGame; { Text in the beginning of program }
-begin
-	writeln('Hi! This game can help you tune your abilities in math.');
-	writeln('3.0 version of this game include choise for math operations');
-end;
-procedure maingame_zeroing(var x, y, ans, rightans: integer; var isrightres: boolean);
-begin
-	x := 0;
-	y := 0;
-	ans := 0;
-	rightans := 0;
-	isrightres := false;
-end;
-procedure RandNumbPlus(var x, y, rightans: integer); { Randomize numbers math oper: + }
-begin
-	x := diffrand + random(100) + 51;
-	y := diffrand + random(100) - 23;
-	rightans := x + y;
-end;
-procedure RandNumbMinus(var x, y, rightans: integer); { Randomize numbers math oper: - }
-begin
-	x := diffrand + random(100) + 51;
-	y := diffrand + random(100) - 23;
-	rightans := x - y;
-end;
-function isright(ans, rightans: integer): boolean; { Check if answer equal right answer }
-begin
-	if ans = rightans then
-		result := TRUE
-	else
-		result := FALSE;
-end;
-procedure diffcheck(difficult: boolean); { Difficult changer }
-begin
-	if difficult = true then
-		diffrand := diffrand + 50  
-	else
-		diffrand := diffrand - 50;
-end;
-var { Variables for main game }
+procedure maingame(mathoper: integer);
+var
 	x, y: integer;
 	ans: integer;
 	rightans: integer;
 	isrightres: boolean;
-
-procedure maingame(mathoper: integer);
+	locmsg: string = 'Aaaaaaaaaaaaaaaaa';
+	locint: integer;
 begin
 	maingame_zeroing(x, y, ans, rightans, isrightres);
+	smartclr(false);
 	case mathoper of
 		0:
 			begin
 				RandNumbPlus(x, y, rightans);
+				halfscrXY(locmsg);
+				GotoXY(CurX, CurY);
 				write('Solve ', x, ' + ', y, ': ');
 			end;
 		1:
 			begin
 				RandNumbMinus(x, y, rightans);
+				halfscrXY(locmsg);
+				GotoXY(CurX, CurY);
 				write('Solve ', x, ' - ', y, ': ');
 			end;
 	end;
@@ -77,59 +48,119 @@ begin
 	isrightres := isright(ans, rightans);
 	if isrightres then
 	begin
-		writeln('Nice work!');
+		smartclr(isrightres);
+		locmsg := 'Nice work!';
+		halfscrXY(locmsg);
+		GotoXY(CurX, CurY);
+		write(locmsg);
 		difficult := TRUE;
+		delay(2000);
 	end
 	else
 	begin
-		writeln('No, right answer is ', rightans);
+		clrscr;
+		mathgamelogo;
+		locmsg := 'aaaaaaaaaaaaaaaaaaaaa';
+		halfscrXY(locmsg);
+		GotoXY(CurX, CurY);
+		write('No, right answer is ', rightans);
 		difficult := FALSE;
+		delay(2000);
 	end;
 	diffcheck(difficult);
 end;
 var
-	i: integer;
+	i, n: integer;
 	endchoise: char;
 	mathoper: integer;
-	gamemode: integer;
+	gamemode: char;
+	msg: msgarr;
+	locmsg: string;
+	locint: integer;
 begin
 	randomize;
+	clrscr;
 	BeginOfGame;
-	writeln('Enter to continue');
+	locmsg := 'Enter to continue';
+	halfscrXY(locmsg);
+	GotoXY(CurX, CurY);
+	write(locmsg);
 	readln;
-	while 0=0 do
+	clrscr;
+	while true do
 	begin
 		repeat
-			write('Want to play? [Y/n] ');
-			readln(endchoise);
+			smartclr(false);
+			locmsg := 'Want to play? [Y/n] ';
+			halfscrXY(locmsg);
+			GotoXY(CurX, CurY);
+			write(locmsg);
+			endchoise := Readkey;
 		until endchoise in ['Y','y','n','N'];
+		smartclr(false);
 		if (endchoise = 'N') or (endchoise = 'n') then
 		begin
-			writeln('See you later...');
+			locmsg := 'See you later...';
+			halfscrXY(locmsg);
+			GotoXY(CurX, CurY);
+			write(locmsg);
+			delay(1000);
+			clrscr;
 			halt(0);
 		end;
-		for i := 1 to 35 do
-		       writeln;
-       		writeln('Choose game mode:');
-		writeln('2 - random');
-		writeln('1 - minus');
-		writeln('0 - plus');
-		read(gamemode);
+		msg[1] := 'Choose game mode:';
+		msg[2] := '2 - random';
+		msg[3] := '1 - minus';
+		msg[4] := '0 - plus';
+		for n := 1 to 4 do
+		begin
+			if n = 1 then
+			begin
+				locint := length(msg[1]);
+				goto point_chgm;
+			end;
+			locint := length(msg[2]);
+		point_chgm:
+			CurX := (ScreenWidth - locint) div 2;
+			CurY := CurY + 1;
+			GotoXY(CurX, CurY);
+			for i := 1 to length(msg[n]) do
+			begin
+				delay(15);
+				write(msg[n][i]);
+			end;
+		end;
+		repeat
+			gamemode := Readkey;
+		until gamemode in ['1', '2', '0'];
+		smartclr(false);
 		IOcheck;
 		case gamemode of
-			2:
+			'2':
 			begin
-				writeln('You choosed random mode');
+				locmsg := 'You choosed random mode';
+				CurX := (ScreenWidth - length(locmsg)) div 2;
+				CurY := (ScreenHeight div 2) - 5;
+				GotoXY(CurX, CurY);
+				write(locmsg);
 				mathoper := random(2); { Randomize Mathematic Operation }
 			end;
-			1:
+			'1':
 			begin
-				writeln('You choosed minus mode');
+				locmsg := 'You choosed minus mode';
+				CurX := (ScreenWidth - length(locmsg)) div 2;
+				CurY := (ScreenHeight div 2) - 5;
+				GotoXY(CurX, CurY);
+				write(locmsg);
 				mathoper := 1;
 			end;
-			0:
+			'0':
 			begin
-				writeln('You choosed plus mode');
+				locmsg := 'You choosed plus mode';
+				CurX := (ScreenWidth - length(locmsg)) div 2;
+				CurY := (ScreenHeight div 2) - 5;
+				GotoXY(CurX, CurY);
+				write(locmsg);
 				mathoper := 0;
 			end;
 		end;
