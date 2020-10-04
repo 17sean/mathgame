@@ -137,32 +137,11 @@ begin
 		IOcheck;
 		case gamemode of
 			'2':
-			begin
-				locmsg := 'You choosed random mode';
-				CurX := (ScreenWidth - length(locmsg)) div 2;
-				CurY := (ScreenHeight div 2) - 5;
-				GotoXY(CurX, CurY);
-				write(locmsg);
 				mathoper := random(2); { Randomize Mathematic Operation }
-			end;
 			'1':
-			begin
-				locmsg := 'You choosed minus mode';
-				CurX := (ScreenWidth - length(locmsg)) div 2;
-				CurY := (ScreenHeight div 2) - 5;
-				GotoXY(CurX, CurY);
-				write(locmsg);
 				mathoper := 1;
-			end;
 			'0':
-			begin
-				locmsg := 'You choosed plus mode';
-				CurX := (ScreenWidth - length(locmsg)) div 2;
-				CurY := (ScreenHeight div 2) - 5;
-				GotoXY(CurX, CurY);
-				write(locmsg);
 				mathoper := 0;
-			end;
 		end;
 		maingame(mathoper);
 		readln;
