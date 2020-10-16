@@ -12,15 +12,17 @@ function isright(ans, rightans: integer): boolean; { Check if answer equal right
 procedure output_wins(isrightres: boolean);
 procedure smartclr(isrightres: boolean);
 procedure diffcheck(difficult: boolean); { Difficult changer }
+
 implementation
 uses crt;
 type
 	msgarr = array [1..5] of string;
+
 var { Global Variables }
 	CurX, CurY: integer;
 	difficult: boolean;
 	diffrand: integer = 10;
-	wins: integer;
+	Wins: integer;
 procedure IOcheck; { Input output result check }
 var
 	locmsg: string = 'Error, i can`t parse your input';
@@ -36,11 +38,13 @@ begin
 		halt(1);
 	end;
 end;
+
 procedure halfscrXY(msg: string);
 begin
 	CurX := (ScreenWidth - length(msg)) div 2;
 	CurY := ScreenHeight div 2;
 end;
+
 procedure BeginOfGame; { Text in the beginning of program }
 var
 	i, n: integer;
@@ -73,11 +77,13 @@ begin
 	delay(2000);
 	clrscr;
 end;
+
 procedure mathgamelogo;
 begin
 	GotoXY(3, 1);
 	write('Math Game');
 end;
+
 procedure maingame_zeroing(var x, y, ans, rightans: integer; var isrightres: boolean);
 begin
 	x := 0;
@@ -86,18 +92,21 @@ begin
 	rightans := 0;
 	isrightres := false;
 end;
+
 procedure RandNumbPlus(var x, y, rightans: integer); { Randomize numbers math oper: + }
 begin
 	x := diffrand + random(100) + 51;
 	y := diffrand + random(100) - 23;
 	rightans := x + y;
 end;
+
 procedure RandNumbMinus(var x, y, rightans: integer); { Randomize numbers math oper: - }
 begin
 	x := diffrand + random(100) + 51;
 	y := diffrand + random(100) - 23;
 	rightans := x - y;
 end;
+
 function isright(ans, rightans: integer): boolean; { Check if answer equal right answer }
 begin
 	if ans = rightans then
@@ -105,22 +114,26 @@ begin
 	else
 		result := FALSE;
 end;
+
 procedure output_wins(isrightres: boolean);
 begin
 	if isrightres then
 		wins := wins + 1;
-	CurX := (ScreenWidth - 12) div 2;
-	GotoXY(CurX, 1);
-	if wins > 0 then
+	CurX := (ScreenWidth - 8) div 2;
+	CurY := 2;
+	GotoXY(CurX, CurY);
+	if Wins > 0 then
 		write('wins: ', wins);
 	
 end;
+
 procedure smartclr(isrightres: boolean);
 begin
 	clrscr;
 	mathgamelogo;
 	output_wins(isrightres);
 end;
+
 procedure diffcheck(difficult: boolean); { Difficult changer }
 begin
 	if difficult = true then

@@ -3,18 +3,22 @@ program mathgame;
 uses crt, engineapi;
 type
 	msgarr = array [1..5] of string;
+
 label
 	point_chgm;
+
 var { Global Variables }
 	CurX, CurY: integer;
 	difficult: boolean;
 	diffrand: integer = 10;
-	wins: integer;
+	Wins: integer;
+
 procedure halfscrXY(msg: string);
 begin
 	CurX := (ScreenWidth - length(msg)) div 2;
 	CurY := ScreenHeight div 2;
 end;
+
 procedure maingame(mathoper: integer);
 var
 	x, y: integer;
@@ -69,6 +73,7 @@ begin
 	end;
 	diffcheck(difficult);
 end;
+
 var
 	i, n: integer;
 	endchoise: char;
@@ -78,9 +83,11 @@ var
 	locmsg: string;
 	locint: integer;
 begin
+	{$I-}
 	randomize;
 	clrscr;
 	BeginOfGame;
+	wins := 0;
 	locmsg := 'Enter to continue';
 	halfscrXY(locmsg);
 	GotoXY(CurX, CurY);
@@ -131,17 +138,14 @@ begin
 			end;
 		end;
 		repeat
-			gamemode := Readkey;
+			gamemode := ReadKey;
 		until gamemode in ['1', '2', '0'];
 		smartclr(false);
 		IOcheck;
 		case gamemode of
-			'2':
-				mathoper := random(2); { Randomize Mathematic Operation }
-			'1':
-				mathoper := 1;
-			'0':
-				mathoper := 0;
+			'2': mathoper := random(2); { Randomize Mathematic Operation }
+			'1': mathoper := 1;
+			'0': mathoper := 0;
 		end;
 		maingame(mathoper);
 		readln;
